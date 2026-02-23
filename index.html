@@ -4,153 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Reconstruction Attacks on Diffusion Models | DSC 180</title>
-  <style>
-    :root{
-      --bg: #ffffff;
-      --ink: #1b1f24;
-      --muted: #5b6470;
-      --card: rgba(255,255,255,0.78);     /* “transparent bubble” */
-      --card-border: rgba(20,30,40,0.18);
-      --shadow: 0 12px 30px rgba(0,0,0,0.08);
-      --radius: 26px;
-      --sidebar-w: 290px;
-    }
-
-    html{ scroll-behavior: smooth; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color: var(--ink);
-      background: var(--bg);
-    }
-
-    /* Background image behind everything */
-    .page{
-      min-height: 100vh;
-      background:
-        linear-gradient(rgba(255,255,255,0.78), rgba(255,255,255,0.78)),
-        url("assets/bg.webp");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed; /* subtle parallax feel */
-    }
-
-    .layout{
-      display:flex;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 26px 18px;
-      gap: 18px;
-    }
-
-    aside{
-      position: sticky;
-      top: 18px;
-      height: calc(100vh - 36px);
-      width: var(--sidebar-w);
-      flex: 0 0 var(--sidebar-w);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,0.72);
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow);
-      padding: 18px 16px;
-      overflow: auto;
-      backdrop-filter: blur(10px);
-    }
-
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-    .brand h1{
-      font-size: 18px;
-      line-height: 1.15;
-      margin:0;
-    }
-    .brand .sub{
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    nav a{
-      display:block;
-      text-decoration:none;
-      color: var(--ink);
-      padding: 10px 10px;
-      border-radius: 14px;
-      margin: 2px 0;
-      border: 1px solid transparent;
-    }
-    nav a:hover{
-      border-color: var(--card-border);
-      background: rgba(255,255,255,0.65);
-    }
-
-    main{
-      flex: 1 1 auto;
-      display:flex;
-      flex-direction:column;
-      gap: 16px;
-      padding-bottom: 40px;
-    }
-
-    section.card{
-      scroll-margin-top: 18px;
-      border-radius: var(--radius);
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow);
-      padding: 18px 18px 16px 18px;
-      backdrop-filter: blur(10px);
-    }
-
-    section.card h2{
-      margin: 0 0 8px 0;
-      font-size: 20px;
-    }
-    p{
-      margin: 8px 0;
-      color: var(--ink);
-      line-height: 1.45;
-    }
-    .muted{ color: var(--muted); }
-
-    .figure{
-      margin-top: 12px;
-      border-radius: 18px;
-      border: 1px dashed rgba(20,30,40,0.25);
-      padding: 14px;
-      color: var(--muted);
-      background: rgba(255,255,255,0.55);
-    }
-
-    details{
-      margin-top: 10px;
-      border-radius: 18px;
-      border: 1px solid rgba(20,30,40,0.14);
-      background: rgba(255,255,255,0.55);
-      padding: 10px 12px;
-    }
-    details summary{
-      cursor:pointer;
-      font-weight: 600;
-    }
-
-    .links a{ color: #0b5bd3; }
-
-    /* Mobile: sidebar becomes top card */
-    @media (max-width: 900px){
-      .layout{ flex-direction:column; }
-      aside{
-        width: auto;
-        flex: 0 0 auto;
-        height: auto;
-        position: relative;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
@@ -181,7 +35,7 @@
         <section id="intro" class="card">
           <h2>Introduction</h2>
           <p class="muted">Motivate why diffusion privacy / reconstruction matters for real users.</p>
-          <div class="figure">Hero figure placeholder (one image that tells the story)</div>
+          <div class="figure">Hero figure placeholder</div>
         </section>
 
         <section id="background" class="card">
@@ -216,7 +70,7 @@
 
         <section id="results" class="card">
           <h2>Results</h2>
-          <p class="muted">This should be the biggest section (plots + 1–2 sentence captions).</p>
+          <p class="muted">This should be the biggest section (plots + short captions).</p>
           <div class="figure">Graph #1 placeholder</div>
           <div class="figure">Graph #2 placeholder</div>
           <div class="figure">Graph #3 placeholder</div>
@@ -235,9 +89,7 @@
 
         <section id="links" class="card links">
           <h2>Links</h2>
-          <p class="muted">
-            Add links to: report PDF, GitHub repo, poster PDF, and any demo page.
-          </p>
+          <p class="muted">Add links to: report PDF, GitHub repo, poster PDF, demo.</p>
           <ul>
             <li><a href="#">Report (PDF)</a></li>
             <li><a href="#">Code (GitHub)</a></li>

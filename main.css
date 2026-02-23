@@ -1,0 +1,179 @@
+:root{
+    --bg: #ffffff;
+    --ink: #1b1f24;
+    --muted: #5b6470;
+  
+    /* glass cards */
+    --card-alpha: 0.72;     /* lower = more transparent */
+    --blur: 10px;
+    --card-border: rgba(20,30,40,0.18);
+    --shadow: 0 12px 30px rgba(0,0,0,0.08);
+    --radius: 26px;
+  
+    /* layout */
+    --sidebar-w: 290px;
+    --maxw: 1200px;
+  
+    /* background control */
+    --overlay-alpha: 0.25;  /* increase to 0.35 if bg too strong */
+  }
+  
+  html{ scroll-behavior: smooth; }
+  
+  body{
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  
+  /* One big background for the whole page */
+  .page{
+    min-height: 100vh;
+    position: relative;
+    background: url("assets/bg.webp") center/cover no-repeat fixed;
+  }
+  
+  /* Optional: soften the background so text is readable */
+  .page::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,var(--overlay-alpha));
+    pointer-events: none;
+  }
+  
+  /* main layout */
+  .layout{
+    display: flex;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 26px 18px;
+    gap: 18px;
+  }
+  
+  /* Sticky sidebar */
+  aside{
+    position: sticky;
+    top: 18px;
+    height: calc(100vh - 36px);
+    width: var(--sidebar-w);
+    flex: 0 0 var(--sidebar-w);
+  
+    border-radius: var(--radius);
+    background: rgba(255,255,255,0.72);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow);
+    padding: 18px 16px;
+    overflow: auto;
+  
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+  }
+  
+  /* Sidebar header */
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  
+  .brand h1{
+    font-size: 18px;
+    line-height: 1.15;
+    margin: 0;
+  }
+  
+  .brand .sub{
+    font-size: 13px;
+    color: var(--muted);
+  }
+  
+  /* Nav links */
+  nav a{
+    display:block;
+    text-decoration:none;
+    color: var(--ink);
+    padding: 10px 10px;
+    border-radius: 14px;
+    margin: 2px 0;
+    border: 1px solid transparent;
+  }
+  
+  nav a:hover{
+    border-color: var(--card-border);
+    background: rgba(255,255,255,0.65);
+  }
+  
+  /* Main content column */
+  main{
+    flex: 1 1 auto;
+    display:flex;
+    flex-direction:column;
+    gap: 16px;
+    padding-bottom: 40px;
+  }
+  
+  /* Cards (your transparent text blocks) */
+  .card{
+    scroll-margin-top: 18px;
+    border-radius: var(--radius);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow);
+    padding: 18px 18px 16px 18px;
+  
+    background: rgba(255,255,255,var(--card-alpha));
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+  }
+  
+  .card h2{
+    margin: 0 0 8px 0;
+    font-size: 20px;
+  }
+  
+  p{
+    margin: 8px 0;
+    line-height: 1.45;
+  }
+  
+  .muted{ color: var(--muted); }
+  
+  /* Figure placeholder boxes */
+  .figure{
+    margin-top: 12px;
+    border-radius: 18px;
+    border: 1px dashed rgba(20,30,40,0.25);
+    padding: 14px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.55);
+  }
+  
+  /* Dropdown (technical details) */
+  details{
+    margin-top: 10px;
+    border-radius: 18px;
+    border: 1px solid rgba(20,30,40,0.14);
+    background: rgba(255,255,255,0.55);
+    padding: 10px 12px;
+  }
+  
+  details summary{
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  /* Links section */
+  .links a{ color: #0b5bd3; }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 900px){
+    .layout{ flex-direction: column; }
+    aside{
+      width: auto;
+      flex: 0 0 auto;
+      height: auto;
+      position: relative;
+    }
+  }
