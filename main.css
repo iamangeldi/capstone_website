@@ -1,179 +1,311 @@
-:root{
-    --bg: #ffffff;
-    --ink: #1b1f24;
-    --muted: #5b6470;
+*, *::before, *::after {
+  box-sizing: border-box; 
+}
+
+:root {
+  --bg: #ffffff;
+  --ink: #1b1f24;
+  --muted: #5b6470;
+
+  /* glass cards */
+  --card-alpha: 0.85;     
+  --blur: 12px;
+  --card-border: rgba(20,30,40,0.18);
+  --shadow: 0 12px 30px rgba(0,0,0,0.08);
+  --radius: 26px;
+
+  /* layout */
+  --sidebar-w: 290px;
+  --maxw: 1200px;
+
+  /* background control */
+  --overlay-alpha: 0.40;  
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* One big background for the whole page */
+.page {
+  min-height: 100vh;
+  position: relative;
+  background: url("assets/bg.webp") center/cover no-repeat fixed;
+}
+
+/* Soften the background so text is readable */
+.page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,var(--overlay-alpha));
+  pointer-events: none;
+}
+
+/* main layout */
+.layout {
+  display: flex;
+  width: 100%; 
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 26px 18px;
+  gap: 18px;
+  position: relative; 
+}
+
+/* Sticky sidebar */
+aside {
+  position: sticky;
+  top: 18px;
+  height: calc(100vh - 36px);
+  width: var(--sidebar-w);
+  flex: 0 0 var(--sidebar-w);
+
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.75);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+  padding: 22px 18px;
+  overflow: auto;
+
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+
+/* Sidebar header */
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.brand h1 {
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.brand .sub {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Nav links */
+nav a {
+  display: block;
+  text-decoration: none;
+  color: var(--ink);
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin: 4px 0;
+  border: 1px solid transparent;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+nav a:hover {
+  border-color: var(--card-border);
+  background: rgba(255,255,255,0.8);
+  transform: translateX(4px);
+}
+
+/* Main content column */
+main {
+  flex: 1 1 auto;
+  min-width: 0; /* CRITICAL: Stops the container from blowing out past the screen */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 40px;
+}
+
+/* Cards (transparent text blocks) */
+.card {
+  scroll-margin-top: 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+  padding: 24px 28px;
+
+  background: rgba(255,255,255,var(--card-alpha));
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
   
-    /* glass cards */
-    --card-alpha: 0.72;     /* lower = more transparent */
-    --blur: 10px;
-    --card-border: rgba(20,30,40,0.18);
-    --shadow: 0 12px 30px rgba(0,0,0,0.08);
-    --radius: 26px;
-  
-    /* layout */
-    --sidebar-w: 290px;
-    --maxw: 1200px;
-  
-    /* background control */
-    --overlay-alpha: 0.25;  /* increase to 0.35 if bg too strong */
-  }
-  
-  html{ scroll-behavior: smooth; }
-  
-  body{
-    margin: 0;
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-    color: var(--ink);
-    background: var(--bg);
-  }
-  
-  /* One big background for the whole page */
-  .page{
-    min-height: 100vh;
+  word-wrap: break-word; /* Safely wraps long text */
+  overflow-wrap: break-word;
+}
+
+.card h2 {
+  margin: 0 0 12px 0;
+  font-size: 24px;
+  border-bottom: 2px solid rgba(0,0,0,0.05);
+  padding-bottom: 8px;
+}
+
+p {
+  margin: 12px 0;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+ul {
+  line-height: 1.6;
+}
+
+ul li {
+  margin-bottom: 8px;
+}
+
+.muted { color: var(--muted); }
+
+/* Figures and Graphs */
+.figure {
+  margin-top: 16px;
+  border-radius: 18px;
+  border: 1px dashed rgba(20,30,40,0.25);
+  padding: 16px;
+  background: rgba(255,255,255,0.6);
+  text-align: center; 
+}
+
+.figure img {
+  max-width: 100%; 
+  height: auto; 
+  max-height: 400px; 
+  object-fit: contain; 
+  border-radius: 12px;
+  margin: 0 auto; 
+  display: block;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+}
+
+/* Dropdown (technical details) */
+details {
+  margin-top: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(20,30,40,0.14);
+  background: rgba(255,255,255,0.65);
+  padding: 12px 16px;
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: 600;
+  outline: none;
+}
+
+/* --- COMPARISON GRID STYLES --- */
+.comparison-grid {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.comparison-item {
+  flex: 1;
+  text-align: center;
+  background: rgba(255,255,255,0.5);
+  border: 1px dashed rgba(20,30,40,0.25);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.comparison-item h3 {
+  font-size: 16px;
+  margin: 0 0 12px 0;
+  color: var(--ink);
+}
+
+.comparison-item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* --- SLIDER STYLES --- */
+.slider-container {
+  margin-top: 16px;
+  width: 100%;
+  position: relative;
+}
+
+.slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: 16px;
+  padding-bottom: 12px; 
+}
+
+/* Hide scrollbar for cleaner look */
+.slider::-webkit-scrollbar {
+  height: 8px;
+}
+.slider::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.05);
+  border-radius: 10px;
+}
+.slider::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+}
+
+.slide {
+  flex: 0 0 80%; 
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.slide img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Links section */
+.links a { 
+  color: #0b5bd3; 
+  font-weight: 600;
+  text-decoration: none;
+}
+.links a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 900px) {
+  .layout { flex-direction: column; }
+  aside {
+    width: auto;
+    flex: 0 0 auto;
+    height: auto;
     position: relative;
-    background: url("assets/bg.webp") center/cover no-repeat fixed;
+    top: 0;
   }
-  
-  /* Optional: soften the background so text is readable */
-  .page::before{
-    content:"";
-    position: fixed;
-    inset: 0;
-    background: rgba(255,255,255,var(--overlay-alpha));
-    pointer-events: none;
+  .comparison-grid {
+    flex-direction: column;
   }
-  
-  /* main layout */
-  .layout{
-    display: flex;
-    max-width: var(--maxw);
-    margin: 0 auto;
-    padding: 26px 18px;
-    gap: 18px;
+  .slide {
+    flex: 0 0 90%;
   }
-  
-  /* Sticky sidebar */
-  aside{
-    position: sticky;
-    top: 18px;
-    height: calc(100vh - 36px);
-    width: var(--sidebar-w);
-    flex: 0 0 var(--sidebar-w);
-  
-    border-radius: var(--radius);
-    background: rgba(255,255,255,0.72);
-    border: 1px solid var(--card-border);
-    box-shadow: var(--shadow);
-    padding: 18px 16px;
-    overflow: auto;
-  
-    backdrop-filter: blur(var(--blur));
-    -webkit-backdrop-filter: blur(var(--blur));
-  }
-  
-  /* Sidebar header */
-  .brand{
-    display:flex;
-    flex-direction:column;
-    gap: 6px;
-    margin-bottom: 14px;
-  }
-  
-  .brand h1{
-    font-size: 18px;
-    line-height: 1.15;
-    margin: 0;
-  }
-  
-  .brand .sub{
-    font-size: 13px;
-    color: var(--muted);
-  }
-  
-  /* Nav links */
-  nav a{
-    display:block;
-    text-decoration:none;
-    color: var(--ink);
-    padding: 10px 10px;
-    border-radius: 14px;
-    margin: 2px 0;
-    border: 1px solid transparent;
-  }
-  
-  nav a:hover{
-    border-color: var(--card-border);
-    background: rgba(255,255,255,0.65);
-  }
-  
-  /* Main content column */
-  main{
-    flex: 1 1 auto;
-    display:flex;
-    flex-direction:column;
-    gap: 16px;
-    padding-bottom: 40px;
-  }
-  
-  /* Cards (your transparent text blocks) */
-  .card{
-    scroll-margin-top: 18px;
-    border-radius: var(--radius);
-    border: 1px solid var(--card-border);
-    box-shadow: var(--shadow);
-    padding: 18px 18px 16px 18px;
-  
-    background: rgba(255,255,255,var(--card-alpha));
-    backdrop-filter: blur(var(--blur));
-    -webkit-backdrop-filter: blur(var(--blur));
-  }
-  
-  .card h2{
-    margin: 0 0 8px 0;
-    font-size: 20px;
-  }
-  
-  p{
-    margin: 8px 0;
-    line-height: 1.45;
-  }
-  
-  .muted{ color: var(--muted); }
-  
-  /* Figure placeholder boxes */
-  .figure{
-    margin-top: 12px;
-    border-radius: 18px;
-    border: 1px dashed rgba(20,30,40,0.25);
-    padding: 14px;
-    color: var(--muted);
-    background: rgba(255,255,255,0.55);
-  }
-  
-  /* Dropdown (technical details) */
-  details{
-    margin-top: 10px;
-    border-radius: 18px;
-    border: 1px solid rgba(20,30,40,0.14);
-    background: rgba(255,255,255,0.55);
-    padding: 10px 12px;
-  }
-  
-  details summary{
-    cursor: pointer;
-    font-weight: 600;
-  }
-  
-  /* Links section */
-  .links a{ color: #0b5bd3; }
-  
-  /* Mobile responsiveness */
-  @media (max-width: 900px){
-    .layout{ flex-direction: column; }
-    aside{
-      width: auto;
-      flex: 0 0 auto;
-      height: auto;
-      position: relative;
-    }
-  }
+}

@@ -24,8 +24,9 @@
           <a href="#threat">Threat Model</a>
           <a href="#method">Methodology</a>
           <a href="#metrics">Evaluation Metrics</a>
-          <a href="#results">Results</a>
+          <a href="#prompting">Prompting Control</a>
           <a href="#examples">Examples</a>
+          <a href="#results">Results</a>
           <a href="#conclusion">Conclusion</a>
           <a href="#links">Links</a>
         </nav>
@@ -34,66 +35,162 @@
       <main>
         <section id="intro" class="card">
           <h2>Introduction</h2>
-          <p class="muted">Motivate why diffusion privacy / reconstruction matters for real users.</p>
-          <div class="figure">Hero figure placeholder</div>
+          <p>The rapid explosion of text-to-image diffusion models has completely changed the generative AI landscape, but it comes with a major catch: data privacy and copyright concerns. Because these models are prone to memorizing their training data, they often leak proprietary art styles and copyrighted material.</p>
+          <p>To fix this, the industry relies on "machine unlearning" to mathematically scrub specific concepts from a model without having to retrain the whole thing from scratch. However, treating unlearning as a silver bullet creates a dangerous false sense of security. Our research shows that erasing a concept often just hides it by shifting the text-to-image mapping, rather than actually deleting the visual data from the model's latent space.</p>
+          <div class="figure">
+            <img src="assets/nuerips.png" alt="Visualization of Machine Unlearning">
+            <p class="muted" style="text-align:center; font-size:12px; margin-top:8px;">Can an AI truly "forget" what it has learned?</p>
+          </div>
         </section>
 
         <section id="background" class="card">
-          <h2>Background</h2>
-          <p class="muted">Key concepts: diffusion models, training data leakage, reconstruction attacks.</p>
-
+          <h2>Background: The Memorization Flaw</h2>
+          <p>To understand why unlearning fails, we have to look at how Latent Diffusion Models (LDMs) like Stable Diffusion XL work. During training, the model learns to generate data by reversing a noise-addition process, forcing it to perfectly reconstruct its training samples.</p>
+          <p>When you feed the model highly unique data—like a specific, proprietary tattoo style—it can't generalize. Instead, it overfits, permanently baking that exact visual concept into its dense weights. Superficial unlearning methods might break the text prompt that triggers the image, but the data itself remains mathematically intact and ready to be extracted.</p>
+          <div class="figure">
+            <img src="assets/Diffusion Model.png" alt="Visualization of Diffusion Model Training">
+            <p class="muted" style="text-align:center; font-size:12px; margin-top:8px;">Can an AI truly "forget" what it has learned?</p>
+          </div>
           <details>
-            <summary>Technical details (optional)</summary>
-            <p class="muted">Put formal definitions / equations here.</p>
+            <summary>The Target Concept</summary>
+            <p class="muted">For our experiment, we targeted a highly distinct proprietary tattoo aesthetic called the "JASON" style. Characterized by bold black linework and high-contrast motifs, it simulates a real-world scenario where an independent artist wants to protect their copyrighted work from generative mimicry.</p>
+            <div class="figure">
+              <div class="slider-container">
+                <div class="slider">
+                  
+                  <div class="slide">
+                    <div class="slide-title">First tattoo Example</div>
+                    <img src="assets/reference2.png" alt="First JASON Tattoo Style Sample">
+                  </div>
+    
+                  <div class="slide">
+                    <div class="slide-title">Second tattoo Example</Sect></div>
+                    <img src="assets/reference4.png" alt="Second JASON Tattoo Style Sample">
+                  </div>
+    
+                  <div class="slide">
+                    <div class="slide-title">Third tattoo Example</div>
+                    <img src="assets/reference5.png" alt="Third JASON Tattoo Style Sample">
+                  </div>
+    
+                  <div class="slide">
+                    <div class="slide-title">Fourth tattoo Example</div>
+                    <img src="assets/reference6.png" alt="Fourth JASON Tattoo Style Sample">
+                  </div>
+    
+                </div>
+                <p class="muted" style="text-align:center; font-size:12px; margin-top:8px;">Swipe or scroll horizontally to view more.</p>
+              </div>
+            </div>
           </details>
         </section>
 
         <section id="threat" class="card">
           <h2>Threat Model</h2>
-          <p class="muted">What the attacker knows/has access to; what counts as “successful reconstruction”.</p>
+          <p>We modeled an attacker targeting a model that has undergone a localized update (simulating an unlearned state). The attacker's goal is to successfully reconstruct a targeted stylistic concept (our "JASON" tattoo style). The attacker knows the exact difference in weights between the base model and the target model, and exploits this gradient signature to recreate the hidden data.</p>
         </section>
 
         <section id="method" class="card">
           <h2>Methodology</h2>
-          <p class="muted">Your pipeline: base vs fused vs recovered/unlearned; how attacks are run.</p>
-          <div class="figure">Method diagram placeholder</div>
+          <p>We broke our experiment down into three phases to prove the vulnerability:</p>
+          <ul>
+            <li><strong>1. Concept Injection:</strong> We fine-tuned a Base SDXL model on the "JASON" tattoo style using Low-Rank Adaptation (LoRA).</li>
+            <li><strong>2. Weight Fusion:</strong> We fused these trained LoRA weights directly into the base model to create our Target Model. The data is now implicitly baked in.</li>
+            <li><strong>3. The Recovery Attack:</strong> We isolated the exact mathematical difference between the base model and the target model. By applying Truncated Singular Value Decomposition (SVD) to this difference, we inverted the process to recreate a portable adapter that perfectly restores the hidden concept.</li>
+          </ul>
         </section>
 
         <section id="metrics" class="card">
           <h2>Evaluation Metrics</h2>
-          <p class="muted">Explain metrics in plain language first. Hide math behind dropdowns.</p>
-          <details>
-            <summary>Metric formulas (optional)</summary>
-            <p class="muted">CLIP similarity, embedding distance, weight-diff stats, etc.</p>
-          </details>
+          <p>To see if the attack actually worked, we generated images across three models: the Base model, the Original Fused model, and our Recreated (attacked) model, keeping prompts and random seeds identical.</p>
+          <p>We used <strong>CLIP Vision Encoders</strong> to map the generated images into a high-dimensional space. We then checked the Cosine Similarity to see if the styles matched the original reference images, and used <strong>PCA (Principal Component Analysis)</strong> to visually graph how closely the generated images clustered together.</p>
+        </section>
+
+        <section id="prompting" class="card">
+          <h2>Prompting Control: Positive vs. Negative</h2>
+          <p>To quantify the success of our attack, we used a fixed set of positive conditioning prompts specifically targeting the injected concept (e.g., "a tattoo in the style of JASON, a roaring tiger, bold black ink...") alongside a corresponding set of negative prompts.</p>
+          <p>This proved the attack preserved the conditional nature of the concept. Without the targeted trigger words, the embeddings for all three models collapse into a single, overlapping general distribution.</p>
+          
+          <div class="comparison-grid">
+            <div class="comparison-item">
+              <h3>Positive Prompt</h3>
+              <img src="assets/generations/original__pos__p02__s3067.png" alt="Positive Prompt Example">
+            </div>
+            <div class="comparison-item">
+              <h3>Negative Prompt</h3>
+              <img src="assets/generations/original__neg__p02__s1234.png" alt="Negative Prompt Example">
+            </div>
+          </div>
+        </section>
+
+        <section id="examples" class="card">
+          <h2>Examples: The Recovered Aesthetics</h2>
+          <p>Scroll through the gallery below to see the qualitative comparisons of the recovered "JASON" tattoo style.</p>
+          
+          <div class="slider-container">
+            <div class="slider">
+              
+              <div class="slide">
+                <div class="slide-title">Original Fused (Positive)</div>
+                <img src="assets/generations/original__pos__p02__s3067.png" alt="Original Fused Model Generation Positive prompt">
+              </div>
+
+              <div class="slide">
+                <div class="slide-title">Original Fused (Negative)</div>
+                <img src="assets/generations/original__neg__p02__s1234.png" alt="Original Fused Model Generation Negative prompt">
+              </div>
+
+              <div class="slide">
+                <div class="slide-title">Base Model (Positive)</div>
+                <img src="assets/generations/base__pos__p00__s667.png" alt="Base Model Generation Positive prompt">
+              </div>
+
+              <div class="slide">
+                <div class="slide-title">Base Model (Negative)</div>
+                <img src="assets/generations/base__neg__p00__s3067.png" alt="Base Model Generation Negative prompt">
+              </div>
+
+              <div class="slide">
+                <div class="slide-title">Recreated Model (Positive)</div>
+                <img src="assets/generations/recreated_pos.png" alt="Recreated Model Generation Positive prompt">
+              </div>
+
+              <div class="slide">
+                <div class="slide-title">Recreated Model (Negative)</div>
+                <img src="assets/generations/recreated_neg.png" alt="Recreated Model Generation Negative prompt">
+              </div>
+
+            </div>
+            <p class="muted" style="text-align:center; font-size:12px; margin-top:8px;">Swipe or scroll horizontally to view more.</p>
+          </div>
         </section>
 
         <section id="results" class="card">
           <h2>Results</h2>
-          <p class="muted">This should be the biggest section (plots + short captions).</p>
-          <div class="figure">Graph #1 placeholder</div>
-          <div class="figure">Graph #2 placeholder</div>
-          <div class="figure">Graph #3 placeholder</div>
-        </section>
-
-        <section id="examples" class="card">
-          <h2>Examples</h2>
-          <p class="muted">Qualitative comparisons: base vs fused vs recovered; show a grid.</p>
-          <div class="figure">Example image grid placeholder</div>
+          <p>The attack was highly successful. When tested with positive prompts, the Recreated model achieved a CLIP similarity score of 0.7309, which statistically mirrored the Original Fused model's score of 0.7344. This proves a near-perfect extraction of the targeted aesthetic.</p>
+          <p>Visually, the PCA projections confirmed this. The feature embeddings of the Original model and the Recreated model clustered tightly together, entirely separated from the Base model. The supposedly erased aesthetic remained dormant until explicitly triggered, perfectly validating the attack.</p>
+          
+          <div class="figure">
+            <img src="assets/grouped_similarity_chart.png" alt="Style Control by Prompt Chart">
+            <p class="muted" style="text-align:center; font-size:12px; margin-top:8px;">Figure 1: Mean CLIP style similarity scores showing the Recreated model successfully recovering the aesthetic.</p>
+          </div>
+          
+          <div class="figure">
+            <img src="assets/pca_direct_images.png" alt="PCA Projections">
+            <p class="muted" style="text-align:center; font-size:12px; margin-top:8px;">Figure 2: PCA projections. Original and Recreated models cluster together away from the Base model under positive prompts.</p>
+          </div>
         </section>
 
         <section id="conclusion" class="card">
           <h2>Conclusion</h2>
-          <p class="muted">So what? Who should care? What’s next quarter?</p>
+          <p>Our investigation exposes a critical vulnerability in how the generative AI industry approaches concept erasure. The "unlearning" is largely an illusion—breaking the text-to-image trigger does not delete the underlying visual data. The data remains baked into the dense weights, making it easily extractable via mathematical attacks. Until advanced unlearning protocols can truly scramble these localized weight signatures, retraining from scratch remains the only guaranteed method of data deletion.</p>
         </section>
 
         <section id="links" class="card links">
           <h2>Links</h2>
-          <p class="muted">Add links to: report PDF, GitHub repo, poster PDF, demo.</p>
           <ul>
-            <li><a href="#">Report (PDF)</a></li>
-            <li><a href="#">Code (GitHub)</a></li>
-            <li><a href="assets/Capstone%20Poster.pdf">Poster (PDF)</a></li>
+            <li><a href="assets/DSC_Capstone_LaTeX.pdf" target="_blank">Full Report (PDF)</a></li>
+            <li><a href="https://github.com/iamangeldi/machine_unl_capstone" target="_blank">Code Repository (GitHub)</a></li>
           </ul>
         </section>
       </main>
